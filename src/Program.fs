@@ -48,19 +48,31 @@ module Core =
 
 [<AutoOpen>]
 module Graphics =
-    let drawSquare char square =
+    let drawSquare char color square =
+        Console.ForegroundColor <- color
         Console.SetCursorPosition (square.x, square.y)
         printf char
 
     let clearScreen () =
         Console.Clear ()
 
-    let drawMany char squares =
-        squares |> List.iter (drawSquare char)
+    let drawMany char color squares =
+        squares |> List.iter (drawSquare char color)
 
     let drawSnake = drawMany "*"
     let drawFood = drawMany "o"
     let drawMines = drawMany "#"
+
+    let drawGameStatus color bounds level score =
+        Console.ForegroundColor <- color
+        let { x = _; y = minY }, { x = maxX; y = _ } = bounds
+        if minY >= 1 then
+            Console.SetCursorPosition(0, 0)
+            printf "Score: %05i\tLevel: %05i" score level
+            if minY >= 2 then
+                for k = 0 to maxX do
+                    Console.SetCursorPosition(k, minY - 1)
+                    printf "_"
 
 module SnakeGame =
 
@@ -70,7 +82,9 @@ module SnakeGame =
     let mutable private mines = []
     let mutable private food = []
     let mutable private level = 1
+    let mutable private gameInProgress = false
 
+    let private gameStatusColor = ConsoleColor.DarkYellow
     let private aliveSnakeColor = ConsoleColor.DarkBlue
     let private deadSnakeColor = ConsoleColor.DarkRed
     let private foodColor = ConsoleColor.DarkGreen
@@ -78,20 +92,18 @@ module SnakeGame =
 
     let private redraw snakeColor foodColor =
         clearScreen ()
-        Console.ForegroundColor <- snakeColor
-        drawSnake snake
-        Console.ForegroundColor <- foodColor
-        drawFood food
-        Console.ForegroundColor <- minesColor
-        drawMines mines
+        drawGameStatus gameStatusColor gameBounds level snake.Length
+        drawSnake snakeColor snake
+        drawFood foodColor food 
+        drawMines minesColor mines
 
-    let private createSquare bounds occupied = 
+    let private createSquare occupied = 
         let rnd = new Random ()
-        let _, { x = maxX; y = maxY } = bounds
+        let { x = minX; y = minY }, { x = maxX; y = maxY } = gameBounds
         let rec makeOne () =
             let square = 
-                { x = rnd.Next(maxX)
-                  y = rnd.Next(maxY) }
+                { x = rnd.Next(minX, maxX)
+                  y = rnd.Next(minY, maxY) }
             let isOccupied = 
                 occupied 
                 |> List.exists ((=) square)
@@ -136,7 +148,7 @@ module SnakeGame =
         let rec foodLoop () =
             async {
                 do! Async.Sleep (5000 / level)
-                food <- (createSquare bounds (snake@mines))::food
+                food <- (createSquare (snake@mines))::food
                 return! foodLoop ()
             }
 
@@ -148,20 +160,24 @@ module SnakeGame =
 
                 if isEnd then
                     redraw deadSnakeColor foodColor
-                    Console.SetCursorPosition(0, 1)
-                    printfn "GAME OVER! Your score: %i" snake.Length
+                    Console.SetCursorPosition(startPosition.x, startPosition.y)
+                    Console.ForegroundColor <- deadSnakeColor
+                    printf "GAME OVER! Press any key to exit..."
+                    Console.ReadKey true |> ignore
+                    gameInProgress <- false
                 else
                     redraw aliveSnakeColor foodColor
                     if (snake.Length / level) > 10 then 
                         level <- level + 1
-                        mines <- (createSquare bounds (snake@food))::mines
+                        mines <- (createSquare (snake@food))::mines
                     return! gameLoop ()
             }
 
         foodLoop () |> Async.StartImmediate
         gameLoop () |> Async.StartImmediate
+        gameInProgress <- true
 
-        while true do
+        while gameInProgress do
             let key = Console.ReadKey(true).Key
             direction <-
                 match key with 
@@ -177,9 +193,10 @@ let main _ =
     Console.CursorVisible <- false
     Console.BackgroundColor <- ConsoleColor.White
 
+    let minX, minY = 0, 2
     let maxX, maxY = Console.WindowWidth, Console.WindowHeight
-    let gameBounds = { x = 0; y = 0 }, { x = maxX; y = maxY }
-    let startPosition = { x = maxX / 2; y = maxY / 2 }
+    let gameBounds = { x = minX; y = minY }, { x = maxX; y = maxY }
+    let startPosition = { x = (maxX - minX) / 2; y = (maxY - minY) / 2 }
     let startDirection = Right
     
     SnakeGame.start gameBounds startPosition startDirection
