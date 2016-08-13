@@ -8,6 +8,13 @@ module Core =
 
     type Direction = Up | Right | Down | Left
 
+    type Action =
+        | MoveSnake
+        | ChangeDirection of Direction 
+        | AddFood
+        | AddMines of int
+        | AdvanceToNextLevel
+
     let degToDirection angle = 
         let degToRad = (*) (Math.PI / 180.0)
         let rad = degToRad angle
@@ -39,12 +46,28 @@ module Core =
         let getValue v min max =
             match v with 
             | x when x < min -> max - 1
-            | x when x >= max -> 0
+            | x when x >= max -> min
             | x -> x
 
         let x = getValue pos.x min.x max.x
         let y = getValue pos.y min.y max.y
         { x = x; y = y}
+
+    let getBoundsCenter bounds =
+        let min, max = bounds
+        { x = (max.x - min.x) / 2
+          y = (max.y - min.y) / 2 }
+
+    let ensureValidBounds bounds minValue minDiff =
+        let min, max = bounds
+        match min.x with
+        | x when x < minValue -> failwith "Min X bound must be 0 or greater"
+        | x when max.x - x < minDiff -> failwith (sprintf "Difference between max X and min X bound must be at least %i" minDiff)
+        | _ -> ()
+        match min.y with
+        | y when y <= minValue -> failwith "Min Y bound must be 0 or greater"
+        | y when max.y - y < 5 -> failwith (sprintf "Difference between max Y and min Y bound must be at least %i" minDiff)
+        | _ -> ()
 
 [<AutoOpen>]
 module Graphics =
@@ -67,43 +90,47 @@ module Graphics =
         Console.ForegroundColor <- color
         let { x = _; y = minY }, { x = maxX; y = _ } = bounds
         if minY >= 1 then
-            Console.SetCursorPosition(0, 0)
+            Console.SetCursorPosition (0, 0)
             printf "Score: %05i\tLevel: %05i" score level
             if minY >= 2 then
-                for k = 0 to maxX do
-                    Console.SetCursorPosition(k, minY - 1)
+                [0..maxX]
+                |> List.iter (fun x ->
+                    Console.SetCursorPosition (x, minY - 1)
                     printf "_"
+                )
 
-module SnakeGame =
+type SnakeGame (bounds) =
 
-    let mutable private gameBounds = ({x = 0; y = 0}, { x = 0; y = 0 })
-    let mutable private direction = Right
-    let mutable private snake = []
-    let mutable private mines = []
-    let mutable private food = []
-    let mutable private level = 1
-    let mutable private gameInProgress = false
+    do
+        ensureValidBounds bounds 0 5
+        
+    let mutable direction = Right
+    let mutable snake = []
+    let mutable mines = []
+    let mutable food = []
+    let mutable level = 1
+    let mutable gameInProgress = false
 
-    let private gameStatusColor = ConsoleColor.DarkYellow
-    let private aliveSnakeColor = ConsoleColor.DarkBlue
-    let private deadSnakeColor = ConsoleColor.DarkRed
-    let private foodColor = ConsoleColor.DarkGreen
-    let private minesColor = ConsoleColor.Red
+    let gameStatusColor = ConsoleColor.DarkYellow
+    let aliveSnakeColor = ConsoleColor.DarkBlue
+    let deadSnakeColor = ConsoleColor.DarkRed
+    let foodColor = ConsoleColor.DarkGreen
+    let minesColor = ConsoleColor.Red
 
-    let private redraw snakeColor foodColor =
+    let redraw snakeColor foodColor =
         clearScreen ()
-        drawGameStatus gameStatusColor gameBounds level snake.Length
+        drawGameStatus gameStatusColor bounds level (snake.Length * level)
         drawSnake snakeColor snake
         drawFood foodColor food 
         drawMines minesColor mines
 
-    let private createSquare occupied = 
+    let createSquare occupied = 
         let rnd = new Random ()
-        let { x = minX; y = minY }, { x = maxX; y = maxY } = gameBounds
+        let min, max = bounds
         let rec makeOne () =
             let square = 
-                { x = rnd.Next(minX, maxX)
-                  y = rnd.Next(minY, maxY) }
+                { x = rnd.Next(min.x, max.x)
+                  y = rnd.Next(min.y, max.y) }
             let isOccupied = 
                 occupied 
                 |> List.exists ((=) square)
@@ -113,23 +140,23 @@ module SnakeGame =
                 square
         makeOne ()
 
-    let private isCrashed head =
+    let isCrashed head =
         snake@mines |> List.exists ((=) head)
 
-    let private tryEatSomeFood head =
+    let tryEatSomeFood head =
         let eaten = food |> List.exists ((=) head)
         if eaten then
             food <- food |> List.filter ((<>) head)
         eaten
 
-    let private moveSnake snake direction =
+    let moveSnake snake direction =
         match snake with
         | [] -> true, []
         | head::_ ->
             let head = 
                 head 
                 |> moveToDirection direction 1
-                |> ensureInBounds gameBounds
+                |> ensureInBounds bounds
             let foodEaten = tryEatSomeFood head
             let body =
                 if foodEaten then
@@ -138,54 +165,95 @@ module SnakeGame =
                     snake |> List.take (snake.Length - 1)
             isCrashed head, head::body
 
-    let start bounds startPosition initialDirection =
-        gameBounds <- bounds
-        snake <- (startPosition |> ensureInBounds gameBounds)::[]
-        direction <- initialDirection
+    let canAcceptDirection direction =
+        match snake with 
+        | [] -> false
+        | [_] -> true
+        | head::(neck::tail)->
+            match direction with
+            | Up when head.x = neck.x -> false
+            | Right when head.y = neck.y -> false
+            | Down when head.x = neck.x -> false
+            | Left when head.y = neck.y -> false
+            | _ -> true
+
+    let endGame () = gameInProgress <- false
+
+    let gameProcessor = MailboxProcessor.Start(fun inbox ->
+        let rec loop() = async {
+            try
+                let! action = inbox.Receive()
+                match action with
+                | MoveSnake ->
+                    let isEnd, newSnake = moveSnake snake direction
+                    snake <- newSnake
+
+                    if isEnd then
+                        redraw deadSnakeColor foodColor
+                        endGame ()
+                    else
+                        redraw aliveSnakeColor foodColor
+                | ChangeDirection d -> 
+                    if canAcceptDirection d then
+                        direction <- d
+                | AddFood -> 
+                    food <- (createSquare (snake@food@mines))::food
+                | AdvanceToNextLevel ->
+                    level <- level + 1
+                | AddMines i ->
+                    [0..i]
+                    |> List.iter (fun _ -> 
+                        mines <- (createSquare (snake@food@mines))::mines
+                    )
+            with
+                | ex -> ()
+            return! loop()
+        }
+        loop ()
+    )
+
+    let advanceToNextLevel () =
+        gameProcessor.Post AdvanceToNextLevel
+        AddMines (level - 1) |> gameProcessor.Post
+
+    member x.Start (startPosition, startDirection) =
+        snake <- (startPosition |> ensureInBounds bounds)::[]
+        direction <- startDirection
 
         redraw aliveSnakeColor foodColor
 
-        let rec foodLoop () =
+        let rec addFoodLoop () =
             async {
                 do! Async.Sleep (5000 / level)
-                food <- (createSquare (snake@mines))::food
-                return! foodLoop ()
+                gameProcessor.Post AddFood 
+                return! addFoodLoop ()
             }
 
         let rec gameLoop () =
             async {
                 do! Async.Sleep (100 / level)
-                let isEnd, newSnake = moveSnake snake direction
-                snake <- newSnake
-
-                if isEnd then
-                    redraw deadSnakeColor foodColor
-                    Console.SetCursorPosition(startPosition.x, startPosition.y)
-                    Console.ForegroundColor <- deadSnakeColor
-                    printf "GAME OVER! Press any key to exit..."
-                    Console.ReadKey true |> ignore
-                    gameInProgress <- false
-                else
-                    redraw aliveSnakeColor foodColor
-                    if (snake.Length / level) > 10 then 
-                        level <- level + 1
-                        mines <- (createSquare (snake@food))::mines
-                    return! gameLoop ()
+                if gameInProgress then
+                    gameProcessor.Post MoveSnake
+                    let shouldAdvanceToNextLevel = snake.Length / level > 9 
+                    if shouldAdvanceToNextLevel then
+                        advanceToNextLevel ()
+                return! gameLoop ()
             }
 
-        foodLoop () |> Async.StartImmediate
+        addFoodLoop () |> Async.StartImmediate
         gameLoop () |> Async.StartImmediate
         gameInProgress <- true
 
         while gameInProgress do
             let key = Console.ReadKey(true).Key
-            direction <-
-                match key with 
-                | ConsoleKey.UpArrow when direction <> Down -> Up
-                | ConsoleKey.RightArrow when direction <> Left -> Right
-                | ConsoleKey.DownArrow when direction <> Up -> Down
-                | ConsoleKey.LeftArrow  when direction <> Right -> Left
-                | _ -> direction
+            match key with 
+            | ConsoleKey.UpArrow -> ChangeDirection Up |> gameProcessor.Post
+            | ConsoleKey.RightArrow -> ChangeDirection Right |> gameProcessor.Post
+            | ConsoleKey.DownArrow -> ChangeDirection Down |> gameProcessor.Post
+            | ConsoleKey.LeftArrow -> ChangeDirection Left |> gameProcessor.Post
+            | ConsoleKey.Add -> advanceToNextLevel ()
+            | ConsoleKey.Escape -> endGame ()
+            | _ -> ()
             
 [<EntryPoint>]
 let main _ = 
@@ -193,15 +261,21 @@ let main _ =
     Console.CursorVisible <- false
     Console.BackgroundColor <- ConsoleColor.White
 
-    let minX, minY = 0, 2
-    let maxX, maxY = Console.WindowWidth, Console.WindowHeight
-    let gameBounds = { x = minX; y = minY }, { x = maxX; y = maxY }
-    let startPosition = { x = (maxX - minX) / 2; y = (maxY - minY) / 2 }
+    let min = { x = 0; y = 2 }
+    let max = { x = Console.WindowWidth; y = Console.WindowHeight }
+    let gameBounds = min, max
+    let startPosition = getBoundsCenter gameBounds
     let startDirection = Right
     
-    SnakeGame.start gameBounds startPosition startDirection
+    SnakeGame(gameBounds).Start (startPosition, startDirection)
 
-    Console.Clear ()
-    Console.ResetColor ()
+    Console.SetCursorPosition (startPosition.x, startPosition.y)
+    Console.ForegroundColor <- ConsoleColor.Red
+    printf "GAME OVER! Press any key to continue..."
+
+    Console.ReadKey true |> ignore
+
     Console.SetCursorPosition (0, 0)
+    Console.ResetColor ()
+    Console.Clear ()
     0

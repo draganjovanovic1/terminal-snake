@@ -1,8 +1,11 @@
 {
+  "name": "terminal-snake",
   "version": "1.0.0-*",
+  "description": "Popular snake game for terminal / console written in F# running on .NET Core",
+  "copyright": "Dragan Jovanović",
   "buildOptions": {
     "emitEntryPoint": true,
-    "outputName": "terminal-snake",
+    "warningsAsErrors": true,
     "compilerName": "fsc",
     "compile": {
       "includeFiles": [
