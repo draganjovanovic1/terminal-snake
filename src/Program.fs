@@ -112,9 +112,9 @@ type SnakeGame (bounds) =
     let mutable gameInProgress = false
 
     let gameStatusColor = ConsoleColor.DarkYellow
-    let aliveSnakeColor = ConsoleColor.DarkBlue
+    let aliveSnakeColor = ConsoleColor.DarkGreen
     let deadSnakeColor = ConsoleColor.DarkRed
-    let foodColor = ConsoleColor.DarkGreen
+    let foodColor = ConsoleColor.Magenta
     let minesColor = ConsoleColor.Red
 
     let redraw snakeColor foodColor =
