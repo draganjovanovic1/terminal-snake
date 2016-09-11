@@ -88,12 +88,12 @@ module Graphics =
 
     let drawGameStatus color bounds level score =
         Console.ForegroundColor <- color
-        let { x = _; y = minY }, { x = maxX; y = _ } = bounds
+        let { x = minX; y = minY }, { x = maxX; y = _ } = bounds
         if minY >= 1 then
             Console.SetCursorPosition (0, 0)
             printf "Score: %05i\tLevel: %05i" score level
             if minY >= 2 then
-                [0..maxX]
+                [minX..maxX-1]
                 |> List.iter (fun x ->
                     Console.SetCursorPosition (x, minY - 1)
                     printf "_"
