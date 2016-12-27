@@ -3,7 +3,11 @@
   "version": "1.0.0-*",
   "description": "Popular snake game for terminal / console written in F# running on .NET Core",
   "copyright": "Dragan Jovanović",
+  "authors": [
+    "Dragan Jovanović"
+  ],
   "buildOptions": {
+    "debugType": "portable",
     "emitEntryPoint": true,
     "warningsAsErrors": true,
     "compilerName": "fsc",
@@ -13,31 +17,18 @@
       ]
     }
   },
-  "dependencies": {
-    "Microsoft.FSharp.Core.netcore": "1.0.0-alpha-160509"
-  },
   "tools": {
-    "dotnet-compile-fsc": {
-      "version": "1.0.0-preview2-*",
-      "imports": [
-        "dnxcore50",
-        "portable-net45+win81",
-        "netstandard1.3"
-      ]
-    }
+    "dotnet-compile-fsc": "1.0.0-preview2-*"
   },
   "frameworks": {
-    "netcoreapp1.0": {
+    "netcoreapp1.1": {
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
-          "version": "1.0.0"
-        }
-      },
-      "imports": [
-        "portable-net45+win8",
-        "dnxcore50"
-      ]
+          "version": "1.1.0"
+        },
+        "Microsoft.FSharp.Core.netcore": "1.0.0-alpha-160629"
+      }
     }
   }
 }
