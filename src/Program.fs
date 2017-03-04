@@ -112,7 +112,7 @@ module SnakeGame =
         drawMines minesColor mines
 
     let private createSquare bounds occupied = 
-        let rnd = new Random ()
+        let rnd = Random ()
         let min, max = bounds
         let rec makeOne () =
             let square = 

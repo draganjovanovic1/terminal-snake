@@ -6,17 +6,17 @@
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/bin/Debug/netcoreapp1.0/terminal-snake.dll",
+            "program": "${workspaceRoot}/src/bin/Debug/netcoreapp1.1/terminal-snake.dll",
             "args": [ "src/" ],
             "cwd": "${workspaceRoot}",
             "stopAtEntry": false,
-            "externalConsole": false
+            "externalConsole": true
         },
         {
             "name": ".NET Core Attach",
             "type": "coreclr",
             "request": "attach",
-            "processId": "${command.pickProcess}"
+            "processId": "${command:pickProcess}"
         }
     ]
 }
