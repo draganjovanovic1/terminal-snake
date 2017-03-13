@@ -2,12 +2,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": ".NET Core Launch (console)",
+            "name": "terminal",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
-            "program": "${workspaceRoot}/src/bin/Debug/netcoreapp1.1/terminal-snake.dll",
-            "args": [ "src/" ],
+            "program": "${workspaceRoot}/build/terminal-snake/terminal-snake.dll",
+            "args": [ "" ],
             "cwd": "${workspaceRoot}",
             "stopAtEntry": false,
             "externalConsole": true

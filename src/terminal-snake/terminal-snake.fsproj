@@ -1,9 +1,8 @@
 <Project Sdk="FSharp.NET.Sdk;Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <AssemblyTitle>terminal-snake</AssemblyTitle>
     <Authors>Dragan Jovanović</Authors>
-    <Description>Popular snake game for terminal / console written in F# running on .NET Core</Description>
+    <Description>Popular snake game runner for terminal / console</Description>
     <Copyright>Dragan Jovanović</Copyright>
     <TargetFramework>netcoreapp1.1</TargetFramework>
     <DebugType>portable</DebugType>
@@ -21,7 +20,11 @@
 
   <ItemGroup>
     <PackageReference Include="FSharp.NET.Sdk" Version="1.0.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.FSharp.Core.netcore" Version="1.0.0-rc-*" />
+    <PackageReference Include="Microsoft.FSharp.Core.netcore" Version="1.0.0-rc-170122" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="../snake-game-lib/snake-game-lib.fsproj" />
   </ItemGroup>
 
   <ItemGroup>

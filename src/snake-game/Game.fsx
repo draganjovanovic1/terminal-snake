@@ -1,17 +1,36 @@
-﻿open System
-open System.Threading.Tasks
+namespace SnakeGame
 
-[<AutoOpen>]
 module Core =
 
+    open System
+
     type Square = { x : int; y : int }
+    type Bounds = Square * Square
+    type Snake = Square list
+    type Food = Square list
+    type Mines = Square list
+    type Level = int
     type Direction = Up | Right | Down | Left
+    type GameStatus = InProgress | GameOver
+
+    type GameConfig = 
+        { bounds : Bounds
+          startPosition : Square
+          startDirection : Direction }
+
     type Action =
         | MoveSnake
         | ChangeDirection of Direction 
         | AddFood
         | AdvanceToNextLevel
         | EndGame
+
+    type Renderer = 
+        { redraw : Snake -> Food -> Mines -> Level -> unit 
+          ended : Snake -> Food -> Mines -> Level -> unit  }
+
+    exception BoundLessThanZeroException of string
+    exception BoundsTooSmallException of string
 
     let degToDirection angle = 
         let degToRad = (*) (Math.PI / 180.0)
@@ -46,7 +65,6 @@ module Core =
             | x when x < min -> max - 1
             | x when x >= max -> min
             | x -> x
-
         let x = getValue pos.x min.x max.x
         let y = getValue pos.y min.y max.y
         { x = x; y = y}
@@ -59,57 +77,18 @@ module Core =
     let ensureValidBounds bounds minValue minDiff =
         let min, max = bounds
         match min.x with
-        | x when x < minValue -> failwith "Min X bound must be 0 or greater"
-        | x when max.x - x < minDiff -> failwith (sprintf "Difference between max X and min X bound must be at least %i" minDiff)
+        | x when x < minValue -> raise (BoundLessThanZeroException "Min X bound must be 0 or greater")
+        | x when max.x - x < minDiff -> raise (BoundsTooSmallException <| sprintf "Difference between max X and min X bound must be at least %i" minDiff)
         | _ -> ()
         match min.y with
-        | y when y <= minValue -> failwith "Min Y bound must be 0 or greater"
-        | y when max.y - y < 5 -> failwith (sprintf "Difference between max Y and min Y bound must be at least %i" minDiff)
+        | y when y <= minValue -> raise (BoundLessThanZeroException "Min Y bound must be 0 or greater")
+        | y when max.y - y < 5 -> raise (BoundsTooSmallException <| sprintf "Difference between max Y and min Y bound must be at least %i" minDiff)
         | _ -> ()
 
-[<AutoOpen>]
-module Graphics =
-    let drawSquare char color square =
-        Console.ForegroundColor <- color
-        Console.SetCursorPosition (square.x, square.y)
-        printf char
-
-    let clearScreen () = Console.Clear ()
-
-    let drawMany char color squares =
-        squares |> List.iter (drawSquare char color)
-
-    let drawSnake = drawMany "*"
-    let drawFood = drawMany "o"
-    let drawMines = drawMany "#"
-
-    let drawGameStatus color bounds level score =
-        Console.ForegroundColor <- color
-        let { x = minX; y = minY }, { x = maxX; y = _ } = bounds
-        if minY >= 1 then
-            Console.SetCursorPosition (0, 0)
-            printf "Score: %05i\tLevel: %05i" score level
-            if minY >= 2 then
-                [minX..maxX-1]
-                |> List.iter (fun x ->
-                    Console.SetCursorPosition (x, minY - 1)
-                    printf "_"
-                )
-
-module SnakeGame =
-    let private gameStatusColor = ConsoleColor.DarkYellow
-    let private aliveSnakeColor = ConsoleColor.DarkGreen
-    let private deadSnakeColor = ConsoleColor.DarkRed
-    let private foodColor = ConsoleColor.Magenta
-    let private minesColor = ConsoleColor.Red
-
-    let private redraw bounds foodColor minesColor snakeColor snake food mines level =
-        clearScreen ()
-        let score = snake |> List.fold (fun s _ ->  s + 1) 0
-        drawGameStatus gameStatusColor bounds level score
-        drawSnake snakeColor snake
-        drawFood foodColor food 
-        drawMines minesColor mines
+module Game =
+    
+    open System
+    open Core
 
     let private createSquare bounds occupied = 
         let rnd = Random ()
@@ -134,7 +113,6 @@ module SnakeGame =
 
     let private tryEatSomeFood food head =
         let eaten = food |> List.exists ((=) head)
-        
         let food =
             if eaten then
                 food |> List.filter ((<>) head)
@@ -184,12 +162,11 @@ module SnakeGame =
         let mines = addMines mines level
         mines
 
-    let private createGame bounds snake food mines direction level = 
+    let private createGame bounds renderer snake food mines direction level = 
         let mutable level = level
-        let mutable isEnd = false
-        let redraw = redraw bounds foodColor minesColor
+        let mutable gameStatus = InProgress
         let getLevel () = level
-        let isGameInProgress () = not isEnd
+        let checkGameStatus () = gameStatus
         let gameAgent = 
             MailboxProcessor.Start(fun inbox ->
                 let rec loop snake food mines direction = async {
@@ -198,12 +175,12 @@ module SnakeGame =
 
                         match action with
                         | MoveSnake ->
-                            isEnd <- isCrashed snake mines
-                            if isEnd then
-                                redraw deadSnakeColor snake food mines level
-                            else
-                                redraw aliveSnakeColor snake food mines level
-
+                            gameStatus <- if isCrashed snake mines then GameOver else InProgress
+                            match gameStatus with
+                            | GameOver ->
+                                renderer.ended snake food mines level
+                            | InProgress ->
+                                renderer.redraw snake food mines level
                                 let snake, food, mines = moveSnake bounds snake food mines direction
                                 if shouldAdvanceToNextLevel snake level then
                                     inbox.Post AdvanceToNextLevel                                
@@ -228,12 +205,15 @@ module SnakeGame =
                 }
                 loop snake food mines direction
             )
-        gameAgent, getLevel, isGameInProgress
+        gameAgent, getLevel, checkGameStatus
         
-    let startGame bounds startPosition startDirection =
+    let startGame gameConfig renderer commandsStream =
+        let { bounds = bounds; startPosition = startPosition; startDirection = startDirection } = gameConfig
+
         ensureValidBounds bounds 0 5
         let startSquare = startPosition |> ensureInBounds bounds
-        let gameAgent, getLevel, isGameInProgress = createGame bounds [startSquare] [] [] startDirection 1
+        let gameAgent, getLevel, checkGameStatus = 
+            createGame bounds renderer [startSquare] [] [] startDirection 1
 
         let rec addFoodLoop () =
             async {
@@ -252,41 +232,8 @@ module SnakeGame =
         addFoodLoop () |> Async.StartImmediate
         gameLoop () |> Async.StartImmediate
 
-        let rec collectInput () =
-            let postAction action = action |> Option.iter gameAgent.Post 
-            let checkGameStatusAndContinue () = if isGameInProgress () then collectInput () 
-            let postActionAndContinue = postAction >> checkGameStatusAndContinue
-            match Console.ReadKey(true).Key with 
-            | ConsoleKey.UpArrow -> ChangeDirection Up |> Some |> postActionAndContinue
-            | ConsoleKey.RightArrow -> ChangeDirection Right |> Some |> postActionAndContinue
-            | ConsoleKey.DownArrow -> ChangeDirection Down |> Some |> postActionAndContinue
-            | ConsoleKey.LeftArrow -> ChangeDirection Left |> Some |> postActionAndContinue
-            | ConsoleKey.Add -> AdvanceToNextLevel |> Some |> postActionAndContinue
-            | ConsoleKey.Escape -> EndGame |> Some |> postAction
-            | _ -> None |> postActionAndContinue
-        collectInput ()
-            
-[<EntryPoint>]
-let main _ = 
-    Console.Clear ()
-    Console.CursorVisible <- false
-    Console.BackgroundColor <- ConsoleColor.White
+        commandsStream 
+        |> Observable.subscribe gameAgent.Post
+        |> ignore
 
-    let min = { x = 0; y = 2 }
-    let max = { x = Console.WindowWidth; y = Console.WindowHeight }
-    let gameBounds = min, max
-    let startPosition = getBoundsCenter gameBounds
-    let startDirection = Right
-    
-    SnakeGame.startGame gameBounds startPosition startDirection
-
-    Console.SetCursorPosition (startPosition.x, startPosition.y)
-    Console.ForegroundColor <- ConsoleColor.Red
-    printf "GAME OVER! Press any key to continue..."
-
-    Console.ReadKey true |> ignore
-
-    Console.SetCursorPosition (0, 0)
-    Console.ResetColor ()
-    Console.Clear ()
-    0
+        checkGameStatus
