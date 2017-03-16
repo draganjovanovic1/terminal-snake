@@ -1,3 +1,7 @@
 source https://www.nuget.org/api/v2
 
+framework: netcore11, netstandard16
+
 nuget FAKE
+nuget Fable.Core
+nuget FSharp.NET.Sdk

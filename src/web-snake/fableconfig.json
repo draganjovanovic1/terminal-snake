@@ -1,0 +1,7 @@
+{
+    "projFile": "./web-snake.fsx",
+    "sourceMaps": true,
+    "rollup": {
+        "dest": "../../build/web-snake/bundle.js"
+    }
+}

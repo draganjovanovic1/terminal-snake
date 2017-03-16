@@ -10,24 +10,25 @@ let buildDir  = "./build/"
 Target "Clean" <| fun _ ->
     CleanDirs [buildDir]
 
-Target "Restore packages" <| fun _ ->
+Target "Restore" <| fun _ ->
     Shell.Exec ("dotnet", "restore") |> ignore
 
-Target "Build lib" <| fun _ ->
+Target "BuildLib" <| fun _ ->
     Shell.Exec ("dotnet", "build src/snake-game-lib/snake-game-lib.fsproj -o ../../build/snake-game-lib") |> ignore
 
-Target "Build JS" <| fun _ ->
-    Shell.Exec ("fable", "src/snake-game/Game.fsx -o ./build/snake-game-js/") |> ignore
+Target "BuildWeb" <| fun _ ->
+    Shell.Exec ("fable", "src/web-snake/") |> ignore
+    Copy "./build/web-snake/" ["src/web-snake/index.html"]
 
-Target "Build terminal" <| fun _ ->
+Target "BuildTerminal" <| fun _ ->
     Shell.Exec ("dotnet", "build src/terminal-snake/terminal-snake.fsproj -o ../../build/terminal-snake") |> ignore
 
 // Build order
 "Clean"
-  ==> "Restore packages"
-  ==> "Build lib"
-  ==> "Build JS"
-  ==> "Build terminal"
+  ==> "Restore"
+  ==> "BuildLib"
+  ==> "BuildWeb"
+  ==> "BuildTerminal"
 
 // start build
-RunTargetOrDefault "Build terminal"
+RunTargetOrDefault "BuildTerminal"

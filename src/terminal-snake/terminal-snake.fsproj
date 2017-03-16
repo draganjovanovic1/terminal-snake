@@ -12,25 +12,17 @@
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
-
   <ItemGroup>
     <Compile Include="Program.fs" />
     <EmbeddedResource Include="**/*.resx" />
   </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="FSharp.NET.Sdk" Version="1.0.1" PrivateAssets="All" />
-    <PackageReference Include="Microsoft.FSharp.Core.netcore" Version="1.0.0-rc-170122" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="../snake-game-lib/snake-game-lib.fsproj" />
   </ItemGroup>
-
   <ItemGroup>
     <DotNetCliToolReference Include="dotnet-compile-fsc">
       <Version>1.0.0-preview2-020000</Version>
     </DotNetCliToolReference>
   </ItemGroup>
-
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
