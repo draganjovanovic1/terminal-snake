@@ -7,21 +7,21 @@ open SnakeGame.Core
 [<AutoOpen>]
 module ConsoleGraphics =
 
-    let private  drawSquare char color square =
+    let private drawSquare char color square =
         Console.ForegroundColor <- color
         Console.SetCursorPosition (square.x, square.y)
         printf char
 
     let private clearScreen () = Console.Clear ()
 
-    let private  drawMany char color squares =
+    let private drawMany char color squares =
         squares |> List.iter (drawSquare char color)
 
-    let private  drawSnake = drawMany "*"
-    let private  drawFood = drawMany "o"
-    let private  drawMines = drawMany "#"
+    let private drawSnake = drawMany "*"
+    let private drawFood = drawMany "o"
+    let private drawMines = drawMany "#"
 
-    let private  drawGameStatus color bounds level score =
+    let private drawGameStatus color bounds level score =
         Console.ForegroundColor <- color
         let { x = minX; y = minY }, { x = maxX; y = _ } = bounds
         if minY >= 1 then

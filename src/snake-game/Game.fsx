@@ -81,8 +81,8 @@ module Core =
         | x when max.x - x < minDiff -> raise (BoundsTooSmallException <| sprintf "Difference between max X and min X bound must be at least %i" minDiff)
         | _ -> ()
         match min.y with
-        | y when y <= minValue -> raise (BoundLessThanZeroException "Min Y bound must be 0 or greater")
-        | y when max.y - y < 5 -> raise (BoundsTooSmallException <| sprintf "Difference between max Y and min Y bound must be at least %i" minDiff)
+        | y when y < minValue -> raise (BoundLessThanZeroException "Min Y bound must be 0 or greater")
+        | y when max.y - y < minDiff -> raise (BoundsTooSmallException <| sprintf "Difference between max Y and min Y bound must be at least %i" minDiff)
         | _ -> ()
 
 module Game =

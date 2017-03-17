@@ -2,10 +2,24 @@
 <html>
 
 <head>
+  <title>Web snake</title>
   <meta http-equiv='Content-Type' content='text/html; charset=utf-8'>
+  <style>
+    body { background-color: lightgray; }
+    #canvas { 
+      border: 1px solid darkblue;
+      background-color: white;
+    }
+    #game-status {
+      font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+      font-size: 12pt;
+      color: darkblue;
+    }
+  </style>
 </head>
 
 <body>
+  <div id="game-status"></div>
   <canvas align="center" id="canvas" width="800" height="600"></canvas>
   <script src="bundle.js"></script>
 </body>

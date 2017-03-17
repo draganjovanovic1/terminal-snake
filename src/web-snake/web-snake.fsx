@@ -1,40 +1,111 @@
 #load "../snake-game/game.fsx"
 #r "../../packages/Fable.Core/lib/netstandard1.6/Fable.Core.dll"
 
-//open System
+open System
 open Fable.Core
 open Fable.Import
 
 open SnakeGame.Core
 open SnakeGame.Game
 
-let maxX, maxY = 300, 200
+[<AutoOpen>]
+module WebGraphics =
+
+    type Color = 
+        | DarkGreen
+        | DarkRed
+        | Magenta
+        | Red
+        | White
+    with member x.ToRgb () = 
+            let toString = sprintf "rgb(%i,%i,%i)"
+            match x with 
+            | DarkGreen -> toString 0 100 0
+            | DarkRed -> toString 139 0 0
+            | Magenta -> toString 255 0 255
+            | Red -> toString 255 0 0 
+            | White -> toString 255 255 255 
+
+    let private clearCanvas (ctx: Browser.CanvasRenderingContext2D) = 
+        ctx.clearRect (0., 0., ctx.canvas.width, ctx.canvas.height)
+
+    let private getCoordsFromSquare square =
+        let { x = xx; y = yy } = square
+        xx |> float, yy |> float
+
+    let private drawSquare (ctx: Browser.CanvasRenderingContext2D) squareSize (color : Color) square =
+        ctx.fillStyle <- U3.Case1 <| color.ToRgb ()
+        let x, y = square |> getCoordsFromSquare
+        ctx.fillRect (x * squareSize, y * squareSize, squareSize, squareSize)
+
+    let private drawCircle (ctx: Browser.CanvasRenderingContext2D) squareSize (color : Color) square =
+        ctx.fillStyle <- U3.Case1 <| color.ToRgb ()
+        ctx.strokeStyle <- U3.Case1 <| White.ToRgb ()
+        let x, y = square |> getCoordsFromSquare
+        let halfSquareSize = (squareSize / 2.) |> Math.Floor
+        ctx.beginPath ()
+        ctx.arc (x * squareSize + halfSquareSize, y * squareSize + halfSquareSize, halfSquareSize, 0., 2. * Math.PI)
+        ctx.fill ()
+        ctx.lineWidth <- 0.
+        ctx.stroke ()
+
+    let private drawMany drawFn squareSize color (ctx: Browser.CanvasRenderingContext2D) squares = squares |> List.iter (drawFn ctx squareSize color)
+
+    let makeRenderer maxX maxY squareSize (canvas: Browser.HTMLCanvasElement) =
+        canvas.width <- (maxX |> float) * squareSize
+        canvas.height <- (maxY |> float) * squareSize
+        let ctx = canvas.getContext_2d ()
+
+        let drawScore score level s = 
+            let div = Browser.document.getElementById ("game-status")
+            div.innerHTML <- sprintf "Score: %05i     Level: %05i" score level
+        let drawSnake = drawMany drawSquare squareSize DarkGreen
+        let drawDeadSnake = drawMany drawSquare squareSize DarkRed
+        let drawFood = drawMany drawCircle squareSize Magenta
+        let drawMines = drawMany drawSquare squareSize Red
+
+        { redraw = fun s f m l ->
+            let score = s |> List.fold (fun s _ ->  s + 1) 0
+            drawScore score l s
+            clearCanvas ctx
+            drawSnake ctx s
+            drawFood ctx f
+            drawMines ctx m
+          ended = fun s f m l ->
+            let score = s |> List.fold (fun s _ ->  s + 1) 0
+            drawScore score l s
+            clearCanvas ctx
+            drawDeadSnake ctx s
+            drawFood ctx f
+            drawMines ctx m }
+
+let maxX, maxY = 50, 50
+let squareSize = 10.
+let canvas =  Browser.document.getElementsByTagName_canvas().[0]
+let renderer = makeRenderer maxX maxY squareSize canvas
 
 let gameConfig = 
-    let min = { x = 0; y = 2 }
+    let min = { x = 0; y = 0 }
     let max = { x = maxX; y = maxY }
     let gameBounds = min, max
     { bounds = gameBounds
-      startPosition = getBoundsCenter (gameBounds)
+      startPosition = getBoundsCenter gameBounds
       startDirection = Right }
 
 let fireAction, actionsStream = 
     let e = Event<_> ()
     e.Trigger, e.Publish
 
-let canvas =  Browser.document.getElementsByTagName_canvas().[0]
-canvas.width <- maxX |> float
-canvas.height <- maxY |> float
-let ctx = canvas.getContext_2d ()
-ctx.font = "10px Arial"
-
-let renderer = 
-    { redraw = fun s f m l ->
-        let text = sprintf "Moving; snake=%A; food=%A; mines=%A; level=%i" s f m l
-        ctx.clearRect (0., 0., ctx.canvas.width, ctx.canvas.height)
-        ctx.strokeText (text, 5., 30.)
-      ended = fun s f m l ->
-        let text = sprintf "Game over; snake=%A; food=%A; mines=%A; level=%i" s f m l
-        ctx.strokeText (text, 5., 5.) }
-
 let getGameStatus = startGame gameConfig renderer actionsStream
+
+Browser.window.addEventListener_keydown (fun e ->
+    match e.keyCode |> int with
+    | 38 -> ChangeDirection Up |> fireAction // up arrow
+    | 39 -> ChangeDirection Right |> fireAction // right arrow
+    | 40 -> ChangeDirection Down |> fireAction // down arrow
+    | 37 -> ChangeDirection Left |> fireAction // left arrow 
+    | 65 -> AdvanceToNextLevel |> fireAction // a
+    | 27 -> EndGame |> fireAction // esc
+    | _ -> ()
+    :> obj
+)
