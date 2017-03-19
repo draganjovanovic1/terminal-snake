@@ -168,6 +168,11 @@ module Game =
         let mines = addMines mines level
         mines
 
+    let rec private getTail = function
+        | [] -> []
+        | [t] -> [t]
+        | head::tail -> getTail tail
+
     type GameInit = 
         { bounds: Bounds
           renderer: Renderer
@@ -198,15 +203,10 @@ module Game =
                             | InProgress ->
                                 init.renderer.redraw snake food mines level
 
+                                let tail = getTail snake
+                                
                                 let snake, food, mines = moveSnake init.bounds snake food mines direction
-
-                                let tail = 
-                                    let rec getTail = function
-                                        | [] -> []
-                                        | [t] -> [t]
-                                        | head::tail -> getTail tail
-                                    getTail snake
-
+                                
                                 let snake = 
                                     if snake.Length < init.startLength then
                                         snake@tail
