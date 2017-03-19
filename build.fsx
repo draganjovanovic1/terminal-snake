@@ -11,7 +11,7 @@ Target "Clean" <| fun _ ->
     CleanDirs [buildDir]
 
 Target "Restore" <| fun _ ->
-    Shell.Exec ("dotnet", "restore") |> ignore
+    Shell.Exec ("dotnet", "restore terminal-snake.sln") |> ignore
 
 Target "BuildLib" <| fun _ ->
     Shell.Exec ("dotnet", "build src/snake-game-lib/snake-game-lib.fsproj -o ../../build/snake-game-lib") |> ignore
