@@ -4,7 +4,7 @@ module Core =
 
     open System
 
-    type Square = { x : int; y : int }
+    type Square = { x: int; y: int }
     type Bounds = Square * Square
     type Snake = Square list
     type Food = Square list
@@ -14,9 +14,10 @@ module Core =
     type GameStatus = InProgress | GameOver
 
     type GameConfig = 
-        { bounds : Bounds
-          startPosition : Square
-          startDirection : Direction }
+        { bounds: Bounds
+          startPosition: Square
+          startLength: int
+          startDirection: Direction }
 
     type Action =
         | MoveSnake
@@ -26,11 +27,12 @@ module Core =
         | EndGame
 
     type Renderer = 
-        { redraw : Snake -> Food -> Mines -> Level -> unit 
-          ended : Snake -> Food -> Mines -> Level -> unit  }
+        { redraw: Snake -> Food -> Mines -> Level -> unit 
+          ended: Snake -> Food -> Mines -> Level -> unit  }
 
     exception BoundLessThanZeroException of string
     exception BoundsTooSmallException of string
+    exception SnakeTooShortException of string
 
     let degToDirection angle = 
         let degToRad = (*) (Math.PI / 180.0)
@@ -84,6 +86,10 @@ module Core =
         | y when y < minValue -> raise (BoundLessThanZeroException "Min Y bound must be 0 or greater")
         | y when max.y - y < minDiff -> raise (BoundsTooSmallException <| sprintf "Difference between max Y and min Y bound must be at least %i" minDiff)
         | _ -> ()
+
+    let ensureValidLength startLength = 
+        if startLength <= 0 then
+            raise (SnakeTooShortException "Start length must be greater than 0")
 
 module Game =
     
@@ -149,7 +155,7 @@ module Game =
             | Left when head.y = neck.y -> false
             | _ -> true
 
-    let private shouldAdvanceToNextLevel (snake : 'a list) level = snake.Length / level > 9
+    let private shouldAdvanceToNextLevel (snake: 'a list) level = snake.Length / level > 9
 
     let private addMines bounds snake food mines level =
         let rec addMines mines left =
@@ -162,8 +168,18 @@ module Game =
         let mines = addMines mines level
         mines
 
-    let private createGame bounds renderer snake food mines direction level = 
-        let mutable level = level
+    type GameInit = 
+        { bounds: Bounds
+          renderer: Renderer
+          snake: Snake
+          food: Food
+          mines: Mines
+          direction: Direction
+          startLength: int
+          level: Level }
+
+    let private createGame (init: GameInit) = 
+        let mutable level = init.level
         let mutable gameStatus = InProgress
         let getLevel () = level
         let checkGameStatus () = gameStatus
@@ -178,10 +194,25 @@ module Game =
                             gameStatus <- if isCrashed snake mines then GameOver else InProgress
                             match gameStatus with
                             | GameOver ->
-                                renderer.ended snake food mines level
+                                init.renderer.ended snake food mines level
                             | InProgress ->
-                                renderer.redraw snake food mines level
-                                let snake, food, mines = moveSnake bounds snake food mines direction
+                                init.renderer.redraw snake food mines level
+
+                                let snake, food, mines = moveSnake init.bounds snake food mines direction
+
+                                let tail = 
+                                    let rec getTail = function
+                                        | [] -> []
+                                        | [t] -> [t]
+                                        | head::tail -> getTail tail
+                                    getTail snake
+
+                                let snake = 
+                                    if snake.Length < init.startLength then
+                                        snake@tail
+                                    else
+                                        snake
+
                                 if shouldAdvanceToNextLevel snake level then
                                     inbox.Post AdvanceToNextLevel                                
                                 return! loop snake food mines direction
@@ -193,27 +224,41 @@ module Game =
                                     direction
                             return! loop snake food mines direction
                         | AddFood -> 
-                            let food = (createSquare bounds (snake@food@mines))::food
+                            let food = (createSquare init.bounds (snake@food@mines))::food
                             return! loop snake food mines direction
                         | AdvanceToNextLevel ->
                             level <- level + 1
-                            let mines = addMines bounds snake food mines level
+                            let mines = addMines init.bounds snake food mines level
                             return! loop snake food mines direction
                         | EndGame -> ()
                     with
                         | ex -> ()
                 }
-                loop snake food mines direction
+                loop init.snake init.food init.mines init.direction
             )
         gameAgent, getLevel, checkGameStatus
         
     let startGame gameConfig renderer commandsStream =
-        let { bounds = bounds; startPosition = startPosition; startDirection = startDirection } = gameConfig
+        let { bounds = bounds
+              startPosition = startPosition
+              startLength = startLength
+              startDirection = startDirection } = gameConfig
 
         ensureValidBounds bounds 0 5
+        ensureValidLength startLength
         let startSquare = startPosition |> ensureInBounds bounds
-        let gameAgent, getLevel, checkGameStatus = 
-            createGame bounds renderer [startSquare] [] [] startDirection 1
+
+        let gameInit =
+            { bounds = bounds
+              renderer = renderer
+              snake = [startSquare]
+              food = []
+              mines = []
+              direction = startDirection
+              startLength = startLength
+              level = 1 }
+
+        let gameAgent, getLevel, checkGameStatus = createGame gameInit
 
         let rec addFoodLoop () =
             async {

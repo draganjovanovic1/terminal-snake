@@ -4,8 +4,8 @@ NUGET
     Fable.Core (1.0.0-narumi-8)
       FSharp.Core (>= 4.1.0.2) - framework: >= net463, netstandard16
       NETStandard.Library (>= 1.6.1) - framework: >= net463, netstandard16
-    FAKE (4.55)
-    FSharp.Compiler.Tools (4.1)
+    FAKE (4.56)
+    FSharp.Compiler.Tools (4.1.1)
     FSharp.Core (4.1.0.2)
       System.Collections (>= 4.0.11)
       System.Console (>= 4.0)
@@ -30,8 +30,8 @@ NUGET
       System.Threading.Thread (>= 4.0)
       System.Threading.ThreadPool (>= 4.0.10)
       System.Threading.Timer (>= 4.0.1)
-    FSharp.NET.Sdk (1.0.1)
-      FSharp.Compiler.Tools (>= 4.1) - framework: >= net40, netstandard16
+    FSharp.NET.Sdk (1.0.2)
+      FSharp.Compiler.Tools (>= 4.1.1) - framework: >= net40, netstandard16
     Microsoft.NETCore.Platforms (1.1)
     Microsoft.NETCore.Targets (1.1)
     Microsoft.Win32.Primitives (4.3)
@@ -565,3 +565,4 @@ NUGET
       System.Text.Encoding (>= 4.3)
       System.Threading (>= 4.3)
       System.Xml.ReaderWriter (>= 4.3)
+    Xamarin.Android.FSharp.ResourceProvider (1.0.0.13)

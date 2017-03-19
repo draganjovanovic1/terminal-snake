@@ -1,7 +1,9 @@
 source https://www.nuget.org/api/v2
 
-framework: netcore11, netstandard16
+framework: netcore11, netstandard16, monoandroid70, monoandroid71
 
 nuget FAKE
 nuget Fable.Core
+nuget FSharp.Core
 nuget FSharp.NET.Sdk
+nuget Xamarin.Android.FSharp.ResourceProvider

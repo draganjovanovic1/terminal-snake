@@ -33,12 +33,12 @@ module WebGraphics =
         let { x = xx; y = yy } = square
         xx |> float, yy |> float
 
-    let private drawSquare (ctx: Browser.CanvasRenderingContext2D) squareSize (color : Color) square =
+    let private drawSquare (ctx: Browser.CanvasRenderingContext2D) squareSize (color: Color) square =
         ctx.fillStyle <- U3.Case1 <| color.ToRgb ()
         let x, y = square |> getCoordsFromSquare
         ctx.fillRect (x * squareSize, y * squareSize, squareSize, squareSize)
 
-    let private drawCircle (ctx: Browser.CanvasRenderingContext2D) squareSize (color : Color) square =
+    let private drawCircle (ctx: Browser.CanvasRenderingContext2D) squareSize (color: Color) square =
         ctx.fillStyle <- U3.Case1 <| color.ToRgb ()
         ctx.strokeStyle <- U3.Case1 <| White.ToRgb ()
         let x, y = square |> getCoordsFromSquare
@@ -90,13 +90,14 @@ let gameConfig =
     let gameBounds = min, max
     { bounds = gameBounds
       startPosition = getBoundsCenter gameBounds
+      startLength = 4
       startDirection = Right }
 
 let fireAction, actionsStream = 
     let e = Event<_> ()
     e.Trigger, e.Publish
 
-let getGameStatus = startGame gameConfig renderer actionsStream
+let checkGameStatus = startGame gameConfig renderer actionsStream
 
 Browser.window.addEventListener_keydown (fun e ->
     match e.keyCode |> int with
@@ -107,5 +108,5 @@ Browser.window.addEventListener_keydown (fun e ->
     | 65 -> AdvanceToNextLevel |> fireAction // a
     | 27 -> EndGame |> fireAction // esc
     | _ -> ()
-    :> obj
+   :> obj
 )

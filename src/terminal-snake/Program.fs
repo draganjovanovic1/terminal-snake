@@ -66,7 +66,8 @@ module Program =
             let max = { x = Console.WindowWidth; y = Console.WindowHeight }
             let gameBounds = min, max
             { bounds = gameBounds
-              startPosition = getBoundsCenter (gameBounds)
+              startPosition = getBoundsCenter gameBounds
+              startLength = 4
               startDirection = Right }
 
         let fireAction, actionsStream = 

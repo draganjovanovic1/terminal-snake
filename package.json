@@ -1,12 +1,14 @@
 {
   "name": "terminal-snake",
   "version": "1.0.0",
-  "description": "Popular snake game for terminal / console written in F# running on .NET Core",
+  "description": "Popular snake game for terminal / console written in F# running on .NET Core / Fable",
   "main": "index.js",
   "dependencies": {
     "fable-core": "^0.7.29"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "ws": "^2.2.1"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -14,7 +16,7 @@
     "type": "git",
     "url": "git+https://draganjovanovic1@github.com/draganjovanovic1/terminal-snake.git"
   },
-  "author": "",
+  "author": "Dragan Jovanović",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/draganjovanovic1/terminal-snake/issues"
