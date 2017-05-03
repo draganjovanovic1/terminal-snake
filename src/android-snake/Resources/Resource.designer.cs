@@ -45,7 +45,7 @@ namespace Android.Snake
 		{
 			
 			// aapt resource value: 0x7f050000
-			public const int debugTextView = 2131034112;
+			public const int canvasView = 2131034112;
 			
 			static Id()
 			{

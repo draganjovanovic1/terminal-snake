@@ -155,7 +155,7 @@ module Game =
             | Left when head.y = neck.y -> false
             | _ -> true
 
-    let private shouldAdvanceToNextLevel (snake: 'a list) level = snake.Length / level > 9
+    let private shouldAdvanceToNextLevel startLength (snake: 'a list) level = (snake.Length - startLength) / level > 9
 
     let private addMines bounds snake food mines level =
         let rec addMines mines left =
@@ -213,7 +213,7 @@ module Game =
                                     else
                                         snake
 
-                                if shouldAdvanceToNextLevel snake level then
+                                if shouldAdvanceToNextLevel init.startLength snake level then
                                     inbox.Post AdvanceToNextLevel                                
                                 return! loop snake food mines direction
                         | ChangeDirection d ->
@@ -269,7 +269,9 @@ module Game =
 
         let rec gameLoop () =
             async {
-                do! Async.Sleep (100 / getLevel ())
+                let divideBy = 1. + Math.Log (float (getLevel ()))
+                let delay = Math.Floor (100. / divideBy) |> int
+                do! Async.Sleep delay
                 gameAgent.Post MoveSnake
                 return! gameLoop ()
             }

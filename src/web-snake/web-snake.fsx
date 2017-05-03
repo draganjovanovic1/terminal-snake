@@ -1,4 +1,4 @@
-#load "../snake-game/game.fsx"
+#load "../snake-game/game.fs"
 #r "../../packages/Fable.Core/lib/netstandard1.6/Fable.Core.dll"
 
 open System

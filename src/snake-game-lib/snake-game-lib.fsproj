@@ -12,7 +12,7 @@
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="../snake-game/game.fsx" />
+    <Compile Include="../snake-game/game.fs" />
   </ItemGroup>
   <ItemGroup>
     <DotNetCliToolReference Include="dotnet-compile-fsc">

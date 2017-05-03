@@ -1,6 +1,7 @@
 ﻿namespace TerminalSnake
 
 open System
+
 open SnakeGame
 open SnakeGame.Core
 
