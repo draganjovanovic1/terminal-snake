@@ -1,0 +1,4 @@
+group ios
+    FSharp.Core
+    SkiaSharp
+    SkiaSharp.Views

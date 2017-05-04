@@ -1,11 +1,27 @@
 source https://www.nuget.org/api/v2
 
-framework: netcore11, netstandard16, monoandroid70
+framework: netcore11, netstandard16
 
 nuget FAKE
-nuget Fable.Core
 nuget FSharp.Core
 nuget FSharp.NET.Sdk
-nuget Xamarin.Android.FSharp.ResourceProvider
-nuget SkiaSharp
-nuget SkiaSharp.Views
+nuget Fable.Core
+
+group android
+    source https://www.nuget.org/api/v2
+
+    framework: monoandroid70
+
+    nuget FSharp.Core
+    nuget Xamarin.Android.FSharp.ResourceProvider
+    nuget SkiaSharp
+    nuget SkiaSharp.Views
+
+group ios
+    source https://www.nuget.org/api/v2
+
+    framework: xamarinios
+    
+    nuget FSharp.Core
+    nuget SkiaSharp
+    nuget SkiaSharp.Views

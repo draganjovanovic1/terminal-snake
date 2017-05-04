@@ -1,4 +1,4 @@
-﻿namespace TerminalSnake
+﻿namespace Terminal.Snake
 
 open System
 
@@ -6,7 +6,7 @@ open SnakeGame
 open SnakeGame.Core
 
 [<AutoOpen>]
-module ConsoleGraphics =
+module Graphics =
 
     let private drawSquare char color square =
         Console.ForegroundColor <- color

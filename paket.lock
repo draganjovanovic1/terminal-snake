@@ -1,12 +1,12 @@
-FRAMEWORK: NETCORE11, NETSTANDARD16, MONOANDROID
+FRAMEWORK: NETCORE11, NETSTANDARD16
 NUGET
   remote: https://www.nuget.org/api/v2
-    Fable.Core (1.0.0-narumi-912) - framework: netstandard16, netcore11, monoandroid
+    Fable.Core (1.0.0-narumi-912) - framework: netstandard16, netcore11
       FSharp.Core (>= 4.1.2) - framework: >= net463, netstandard16
       NETStandard.Library (>= 1.6.1) - framework: >= net463, netstandard16
-    FAKE (4.60) - framework: netstandard16, netcore11, monoandroid
+    FAKE (4.61.1) - framework: netstandard16, netcore11
     FSharp.Compiler.Tools (4.1.17) - framework: netstandard16
-    FSharp.Core (4.1.17) - framework: netstandard16, netcore11, monoandroid
+    FSharp.Core (4.1.17) - framework: netstandard16, netcore11
       System.Collections (>= 4.0.11) - framework: netstandard16
       System.Console (>= 4.0) - framework: netstandard16
       System.Diagnostics.Debug (>= 4.0.11) - framework: netstandard16
@@ -30,10 +30,10 @@ NUGET
       System.Threading.Thread (>= 4.0) - framework: netstandard16
       System.Threading.ThreadPool (>= 4.0.10) - framework: netstandard16
       System.Threading.Timer (>= 4.0.1) - framework: netstandard16
-    FSharp.NET.Sdk (1.0.4) - framework: netstandard16, netcore11, monoandroid
+    FSharp.NET.Sdk (1.0.4) - framework: netstandard16, netcore11
       FSharp.Compiler.Tools (>= 4.1.15) - framework: >= net40, netstandard16
-    Microsoft.NETCore.Platforms (1.1) - framework: netstandard16, netcore11, monoandroid
-    Microsoft.NETCore.Targets (1.1) - framework: netstandard16, netcore11, monoandroid
+    Microsoft.NETCore.Platforms (1.1) - framework: netstandard16, netcore11
+    Microsoft.NETCore.Targets (1.1) - framework: netstandard16, netcore11
     Microsoft.Win32.Primitives (4.3) - framework: netstandard16
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
@@ -83,55 +83,52 @@ NUGET
       System.Threading.Timer (>= 4.3) - framework: >= net451, netstandard16
       System.Xml.ReaderWriter (>= 4.3) - framework: netstandard16
       System.Xml.XDocument (>= 4.3) - framework: netstandard16
-    runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-    runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-    runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-    runtime.native.System (4.3) - framework: netstandard16, netcore11, monoandroid
-      Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16, netcore11, monoandroid
-      Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16, netcore11, monoandroid
+    runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
+    runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
+    runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
+    runtime.native.System (4.3) - framework: netstandard16, netcore11
+      Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16, netcore11
+      Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16, netcore11
     runtime.native.System.IO.Compression (4.3) - framework: netstandard16
-      Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16, netcore11, monoandroid
-      Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16, netcore11, monoandroid
-    runtime.native.System.Net.Http (4.3) - framework: netstandard16, netcore11, monoandroid
-      Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16, netcore11, monoandroid
-      Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16, netcore11, monoandroid
+      Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16, netcore11
+      Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16, netcore11
+    runtime.native.System.Net.Http (4.3) - framework: netstandard16, netcore11
+      Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16, netcore11
+      Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16, netcore11
     runtime.native.System.Security.Cryptography.Apple (4.3) - framework: netstandard16
-      runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.Apple (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-    runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11, monoandroid
-    runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-    runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
+      runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.Apple (>= 4.3) - framework: netstandard16, netcore11
+    runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
+      runtime.debian.8-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11
+      runtime.fedora.23-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11
+      runtime.fedora.24-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11
+      runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11
+      runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11
+      runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11
+      runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11
+      runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11
+      runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11
+      runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16, netcore11
+    runtime.opensuse.13.2-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
+    runtime.opensuse.42.1-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
     runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.Apple (4.3) - framework: netstandard16
-    runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-    runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-    runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-    runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-    runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-    SkiaSharp (1.57) - framework: netstandard16, netcore11, monoandroid
-    SkiaSharp.Views (1.57) - framework: netstandard16, netcore11, monoandroid
-      SkiaSharp (>= 1.57) - framework: netstandard16, netcore11, monoandroid
+    runtime.osx.10.10-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
+    runtime.rhel.7-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
+    runtime.ubuntu.14.04-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
+    runtime.ubuntu.16.04-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
+    runtime.ubuntu.16.10-x64.runtime.native.System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
     System.AppContext (4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Buffers (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Buffers (4.3) - framework: netstandard16, netcore11
       System.Diagnostics.Debug (>= 4.3) - framework: netstandard16
       System.Diagnostics.Tracing (>= 4.3) - framework: netstandard16
       System.Resources.ResourceManager (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
-    System.Collections (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Collections (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Collections.Concurrent (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Collections.Concurrent (4.3) - framework: netstandard16, netcore11
       System.Collections (>= 4.3) - framework: netstandard16
       System.Diagnostics.Debug (>= 4.3) - framework: netstandard16
       System.Diagnostics.Tracing (>= 4.3) - framework: netstandard16
@@ -142,13 +139,13 @@ NUGET
       System.Runtime.Extensions (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
       System.Threading.Tasks (>= 4.3) - framework: netstandard16
-    System.Console (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Console (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.IO (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Text.Encoding (>= 4.3) - framework: netstandard16
-    System.Diagnostics.Debug (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Diagnostics.Debug (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
@@ -158,15 +155,15 @@ NUGET
       System.Reflection (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
-    System.Diagnostics.Tools (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Diagnostics.Tools (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Diagnostics.Tracing (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Diagnostics.Tracing (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Globalization (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Globalization (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
@@ -182,7 +179,7 @@ NUGET
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Runtime.Extensions (>= 4.3) - framework: netstandard16
       System.Runtime.InteropServices (>= 4.3) - framework: netstandard16
-    System.IO (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.IO (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
@@ -214,7 +211,7 @@ NUGET
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Runtime.Extensions (>= 4.3) - framework: netstandard16
       System.Text.Encoding (>= 4.3) - framework: netstandard16
-    System.IO.FileSystem (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.IO.FileSystem (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.IO (>= 4.3) - framework: netstandard16
@@ -223,15 +220,15 @@ NUGET
       System.Runtime.Handles (>= 4.3) - framework: netstandard16
       System.Text.Encoding (>= 4.3) - framework: netstandard16
       System.Threading.Tasks (>= 4.3) - framework: netstandard16
-    System.IO.FileSystem.Primitives (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.IO.FileSystem.Primitives (4.3) - framework: netstandard16, netcore11
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Linq (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Linq (4.3) - framework: netstandard16, netcore11
       System.Collections (>= 4.3) - framework: netstandard16
       System.Diagnostics.Debug (>= 4.3) - framework: netstandard16
       System.Resources.ResourceManager (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Runtime.Extensions (>= 4.3) - framework: netstandard16
-    System.Linq.Expressions (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Linq.Expressions (4.3) - framework: netstandard16, netcore11
       System.Collections (>= 4.3) - framework: netstandard16
       System.Diagnostics.Debug (>= 4.3) - framework: netstandard16
       System.Globalization (>= 4.3) - framework: netstandard16
@@ -258,7 +255,7 @@ NUGET
       System.Reflection.Extensions (>= 4.3) - framework: netstandard16
       System.Resources.ResourceManager (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Net.Http (4.3.1) - framework: netstandard16, netcore11, monoandroid
+    System.Net.Http (4.3.1) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       runtime.native.System (>= 4.3) - framework: netstandard16
       runtime.native.System.Net.Http (>= 4.3) - framework: netstandard16
@@ -285,7 +282,7 @@ NUGET
       System.Text.Encoding (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
       System.Threading.Tasks (>= 4.3) - framework: netstandard16
-    System.Net.Primitives (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Net.Primitives (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
@@ -316,13 +313,13 @@ NUGET
       System.Resources.ResourceManager (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Runtime.Extensions (>= 4.3) - framework: netstandard16
-    System.ObjectModel (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.ObjectModel (4.3) - framework: netstandard16, netcore11
       System.Collections (>= 4.3) - framework: netstandard16
       System.Diagnostics.Debug (>= 4.3) - framework: netstandard16
       System.Resources.ResourceManager (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
-    System.Reflection (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Reflection (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.IO (>= 4.3) - framework: netstandard16
@@ -334,7 +331,7 @@ NUGET
       System.Reflection.Emit.ILGeneration (>= 4.3) - framework: netstandard16
       System.Reflection.Primitives (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Reflection.Emit.ILGeneration (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Reflection.Emit.ILGeneration (4.3) - framework: netstandard16, netcore11
       System.Reflection (>= 4.3) - framework: netstandard16
       System.Reflection.Primitives (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
@@ -343,36 +340,36 @@ NUGET
       System.Reflection.Emit.ILGeneration (>= 4.3) - framework: netstandard16
       System.Reflection.Primitives (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Reflection.Extensions (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Reflection.Extensions (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Reflection (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Reflection.Primitives (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Reflection.Primitives (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
     System.Reflection.TypeExtensions (4.3) - framework: netstandard16
       System.Reflection (>= 4.3) - framework: >= net462, netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Resources.ResourceManager (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Resources.ResourceManager (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Globalization (>= 4.3) - framework: netstandard16
       System.Reflection (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Runtime (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Runtime (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
-    System.Runtime.Extensions (4.3) - framework: netstandard16, netcore11, monoandroid
-      Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
-      Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
-      System.Runtime (>= 4.3) - framework: netstandard16
-    System.Runtime.Handles (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Runtime.Extensions (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
-    System.Runtime.InteropServices (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Runtime.Handles (4.3) - framework: netstandard16, netcore11
+      Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
+      Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
+      System.Runtime (>= 4.3) - framework: netstandard16
+    System.Runtime.InteropServices (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16, netcore11
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16, netcore11
       System.Reflection (>= 4.3) - framework: netstandard16, netcore11
@@ -387,12 +384,12 @@ NUGET
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Runtime.InteropServices (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
-    System.Runtime.Numerics (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Runtime.Numerics (4.3) - framework: netstandard16, netcore11
       System.Globalization (>= 4.3) - framework: netstandard16
       System.Resources.ResourceManager (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Runtime.Extensions (>= 4.3) - framework: netstandard16
-    System.Security.Cryptography.Algorithms (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Security.Cryptography.Algorithms (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       runtime.native.System.Security.Cryptography.Apple (>= 4.3) - framework: netstandard16
       runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16
@@ -433,7 +430,7 @@ NUGET
       System.Security.Cryptography.Primitives (>= 4.3) - framework: >= net46, netstandard16
       System.Text.Encoding (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
-    System.Security.Cryptography.Encoding (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Security.Cryptography.Encoding (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: netstandard16
       System.Collections (>= 4.3) - framework: netstandard16
@@ -446,8 +443,8 @@ NUGET
       System.Runtime.InteropServices (>= 4.3) - framework: netstandard16
       System.Security.Cryptography.Primitives (>= 4.3) - framework: netstandard16
       System.Text.Encoding (>= 4.3) - framework: netstandard16
-    System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11, monoandroid
-      runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: >= net463, netstandard16, monoandroid
+    System.Security.Cryptography.OpenSsl (4.3) - framework: netstandard16, netcore11
+      runtime.native.System.Security.Cryptography.OpenSsl (>= 4.3) - framework: >= net463, netstandard16
       System.Collections (>= 4.3) - framework: netstandard16
       System.IO (>= 4.3) - framework: >= net463, netstandard16
       System.Resources.ResourceManager (>= 4.3) - framework: netstandard16
@@ -460,7 +457,7 @@ NUGET
       System.Security.Cryptography.Encoding (>= 4.3) - framework: >= net463, netstandard16
       System.Security.Cryptography.Primitives (>= 4.3) - framework: >= net463, netstandard16
       System.Text.Encoding (>= 4.3) - framework: netstandard16
-    System.Security.Cryptography.Primitives (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Security.Cryptography.Primitives (4.3) - framework: netstandard16, netcore11
       System.Diagnostics.Debug (>= 4.3) - framework: netstandard16
       System.Globalization (>= 4.3) - framework: netstandard16
       System.IO (>= 4.3) - framework: netstandard16
@@ -468,7 +465,7 @@ NUGET
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
       System.Threading.Tasks (>= 4.3) - framework: netstandard16
-    System.Security.Cryptography.X509Certificates (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Security.Cryptography.X509Certificates (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       runtime.native.System (>= 4.3) - framework: netstandard16
       runtime.native.System.Net.Http (>= 4.3) - framework: netstandard16
@@ -494,7 +491,7 @@ NUGET
       System.Security.Cryptography.Primitives (>= 4.3) - framework: netstandard16
       System.Text.Encoding (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
-    System.Text.Encoding (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Text.Encoding (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
@@ -503,17 +500,17 @@ NUGET
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Text.Encoding (>= 4.3) - framework: netstandard16
-    System.Text.RegularExpressions (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Text.RegularExpressions (4.3) - framework: netstandard16, netcore11
       System.Collections (>= 4.3) - framework: netstandard16
       System.Globalization (>= 4.3) - framework: netstandard16
       System.Resources.ResourceManager (>= 4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16, netcore11
       System.Runtime.Extensions (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
-    System.Threading (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Threading (4.3) - framework: netstandard16, netcore11
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Threading.Tasks (>= 4.3) - framework: netstandard16
-    System.Threading.Tasks (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Threading.Tasks (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
@@ -535,7 +532,7 @@ NUGET
     System.Threading.ThreadPool (4.3) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
       System.Runtime.Handles (>= 4.3) - framework: netstandard16
-    System.Threading.Timer (4.3) - framework: netstandard16, netcore11, monoandroid
+    System.Threading.Timer (4.3) - framework: netstandard16, netcore11
       Microsoft.NETCore.Platforms (>= 1.1) - framework: netstandard16
       Microsoft.NETCore.Targets (>= 1.1) - framework: netstandard16
       System.Runtime (>= 4.3) - framework: netstandard16
@@ -568,4 +565,22 @@ NUGET
       System.Text.Encoding (>= 4.3) - framework: netstandard16
       System.Threading (>= 4.3) - framework: netstandard16
       System.Xml.ReaderWriter (>= 4.3) - framework: netstandard16
-    Xamarin.Android.FSharp.ResourceProvider (1.0.0.13) - framework: netstandard16, netcore11, monoandroid
+
+GROUP android
+FRAMEWORK: MONOANDROID
+NUGET
+  remote: https://www.nuget.org/api/v2
+    FSharp.Core (4.1.17)
+    SkiaSharp (1.57)
+    SkiaSharp.Views (1.57)
+      SkiaSharp (>= 1.57)
+    Xamarin.Android.FSharp.ResourceProvider (1.0.0.13)
+
+GROUP ios
+FRAMEWORK: XAMARINIOS
+NUGET
+  remote: https://www.nuget.org/api/v2
+    FSharp.Core (4.1.17)
+    SkiaSharp (1.57)
+    SkiaSharp.Views (1.57)
+      SkiaSharp (>= 1.57)

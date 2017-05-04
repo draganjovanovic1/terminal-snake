@@ -1,13 +1,14 @@
 {
   "name": "terminal-snake",
   "version": "1.0.0",
-  "description": "Popular snake game for terminal / console written in F# running on .NET Core / Fable",
+  "description": "Popular snake game for terminal / console written in F# running on .NET Core / Fable / Xamarin",
   "main": "index.js",
   "dependencies": {
-    "fable-core": "^0.7.29"
+    "fable-core": "0.7.29"
   },
   "devDependencies": {
-    "ws": "^2.2.1"
+    "ws": "2.3.1",
+    "fable-compiler": "0.7.50"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

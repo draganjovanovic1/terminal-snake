@@ -1,4 +1,5 @@
-FSharp.Core
-Xamarin.Android.FSharp.ResourceProvider
-SkiaSharp
-SkiaSharp.Views
+group android 
+    FSharp.Core
+    Xamarin.Android.FSharp.ResourceProvider
+    SkiaSharp
+    SkiaSharp.Views

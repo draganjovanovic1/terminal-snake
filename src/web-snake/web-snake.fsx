@@ -9,7 +9,7 @@ open SnakeGame.Core
 open SnakeGame.Game
 
 [<AutoOpen>]
-module WebGraphics =
+module Graphics =
 
     type Color = 
         | DarkGreen
@@ -81,7 +81,7 @@ module WebGraphics =
 
 let maxX, maxY = 50, 50
 let squareSize = 10.
-let canvas =  Browser.document.getElementsByTagName_canvas().[0]
+let canvas = Browser.document.getElementsByTagName_canvas().[0]
 let renderer = makeRenderer maxX maxY squareSize canvas
 
 let gameConfig = 
