@@ -4,11 +4,11 @@
   "description": "Popular snake game for terminal / console written in F# running on .NET Core / Fable / Xamarin",
   "main": "index.js",
   "dependencies": {
-    "fable-core": "0.7.29"
+    "fable-core": "^0.7.30"
   },
   "devDependencies": {
-    "ws": "2.3.1",
-    "fable-compiler": "0.7.50"
+    "ws": "^2.3.1",
+    "fable-compiler": "0.7.45"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -5,7 +5,6 @@ framework: netcore11, netstandard16
 nuget FAKE
 nuget FSharp.Core
 nuget FSharp.NET.Sdk
-nuget Fable.Core
 
 group android
     source https://www.nuget.org/api/v2

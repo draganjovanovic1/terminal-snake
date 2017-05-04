@@ -35,4 +35,4 @@ Target "BuildWeb" <| fun _ ->
   ==> "BuildWeb"
 
 // start build
-RunTargetOrDefault "BuildTerminal"
+RunTargetOrDefault "BuildWeb"

@@ -1,5 +1,5 @@
 #load "../snake-game/game.fs"
-#r "../../packages/Fable.Core/lib/netstandard1.6/Fable.Core.dll"
+#r "../../node_modules/fable-core/Fable.Core.dll"
 
 open System
 open Fable.Core
