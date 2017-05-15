@@ -17,7 +17,7 @@ type MainActivity () =
     inherit Activity ()
 
     let mutable gestureDetector: GestureDetector = null
-    let mutable checkGameStatus = fun () -> GameStatus.GameOver
+    let mutable checkGameStatus = fun () -> GameStatus.GameOver (1, 0)
 
     let fireAction, actionsStream = 
         let e = Event<_> ()
@@ -29,8 +29,8 @@ type MainActivity () =
 
     override __.OnBackPressed () =
         match checkGameStatus () with
-        | GameOver -> base.OnBackPressed ()
-        | InProgress -> fireAction EndGame
+        | GameOver _ -> base.OnBackPressed ()
+        | InProgress _ -> fireAction EndGame
 
     override x.OnCreate (bundle) =
         base.OnCreate (bundle)

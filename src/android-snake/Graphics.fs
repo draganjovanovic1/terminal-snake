@@ -3,6 +3,7 @@
 [<AutoOpen>]
 module Graphics = 
 
+    open System
     open Android.App
     open SkiaSharp
     open SkiaSharp.Views.Android
@@ -13,6 +14,7 @@ module Graphics =
         | DarkGreen
         | DarkRed
         | Magenta
+        | DarkMagenta
         | Red
         | White
     with member x.ToSkColor () = 
@@ -21,6 +23,7 @@ module Graphics =
             | DarkGreen -> toSkColor 0 100 0
             | DarkRed -> toSkColor 139 0 0
             | Magenta -> toSkColor 255 0 255
+            | DarkMagenta -> toSkColor 102 0 102
             | Red -> toSkColor 255 0 0 
             | White -> toSkColor 255 255 255 
 
@@ -66,29 +69,31 @@ module Graphics =
 
         let drawSnake = drawMany drawSquare squareSize DarkGreen
         let drawDeadSnake = drawMany drawSquare squareSize DarkRed
-        let drawFood = drawMany drawCircle squareSize Magenta
+        let drawFood canvas food = 
+            let good, expiring =
+                food |> List.partition (fun f -> f.BestBefore > DateTime.Now.AddSeconds (5.))
+            drawMany drawCircle squareSize Magenta canvas (good |> List.map (fun f -> f.Position)) 
+            drawMany drawCircle squareSize DarkMagenta canvas (expiring |> List.map (fun f -> f.Position))
         let drawMines = drawMany drawSquare squareSize Red
 
-        let mutable drawGame : SKCanvas -> unit = fun _ -> ()
+        let mutable drawGame : SKCanvas -> unit = ignore
 
         canvasView.PaintSurface
         |> Observable.subscribe (fun s -> drawGame s.Surface.Canvas)
         |> ignore
 
-        { redraw = fun s f m l ->
+        { redraw = fun s f m l sc ->
             drawGame <- fun canvas ->
                 clearCanvas canvas
-                let score = s |> List.fold (fun s _ ->  s + 1) 0
-                drawScore canvas canvasView.Width canvasView.Height l score
+                drawScore canvas canvasView.Width canvasView.Height l sc
                 drawSnake canvas s
                 drawFood canvas f
                 drawMines canvas m
             activity.RunOnUiThread (fun _ -> canvasView.Invalidate ())
-          ended = fun s f m l ->
+          ended = fun s f m l sc ->
             drawGame <- fun canvas ->
                 clearCanvas canvas
-                let score = s |> List.fold (fun s _ ->  s + 1) 0
-                drawScore canvas canvasView.Width canvasView.Height l score
+                drawScore canvas canvasView.Width canvasView.Height l sc
                 drawDeadSnake canvas s
                 drawFood canvas f
                 drawMines canvas m

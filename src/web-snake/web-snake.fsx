@@ -15,6 +15,7 @@ module Graphics =
         | DarkGreen
         | DarkRed
         | Magenta
+        | DarkMagenta
         | Red
         | White
     with member x.ToRgb () = 
@@ -23,6 +24,7 @@ module Graphics =
             | DarkGreen -> toString 0 100 0
             | DarkRed -> toString 139 0 0
             | Magenta -> toString 255 0 255
+            | DarkMagenta -> toString 102 0 102
             | Red -> toString 255 0 0 
             | White -> toString 255 255 255 
 
@@ -61,19 +63,21 @@ module Graphics =
             div.innerHTML <- sprintf "Score: %05i     Level: %05i" score level
         let drawSnake = drawMany drawSquare squareSize DarkGreen
         let drawDeadSnake = drawMany drawSquare squareSize DarkRed
-        let drawFood = drawMany drawCircle squareSize Magenta
+        let drawFood ctx food = 
+            let good, expiring =
+                food |> List.partition (fun f -> f.BestBefore > DateTime.Now.AddSeconds (5.))
+            drawMany drawCircle squareSize Magenta ctx (good |> List.map (fun f -> f.Position)) 
+            drawMany drawCircle squareSize DarkMagenta ctx (expiring |> List.map (fun f -> f.Position))
         let drawMines = drawMany drawSquare squareSize Red
 
-        { redraw = fun s f m l ->
-            let score = s |> List.fold (fun s _ ->  s + 1) 0
-            drawScore score l s
+        { redraw = fun s f m l sc ->
+            drawScore sc l s
             clearCanvas ctx
             drawSnake ctx s
             drawFood ctx f
             drawMines ctx m
-          ended = fun s f m l ->
-            let score = s |> List.fold (fun s _ ->  s + 1) 0
-            drawScore score l s
+          ended = fun s f m l sc ->
+            drawScore sc l s
             clearCanvas ctx
             drawDeadSnake ctx s
             drawFood ctx f

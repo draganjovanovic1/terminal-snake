@@ -1,8 +1,12 @@
-// include Fake libs
 #r "./packages/FAKE/tools/FakeLib.dll"
 
+open System
 open Fake
 open Fake.XamarinHelper
+open Fake.DotNetCli
+open Fake.NpmHelper
+
+//sh build.sh AndroidPackage -ev keystorePath=*.keystore -ev keystorePwd=****** -ev keystoreAlias=******
 
 // Directories
 let buildDir  = "./build/"
@@ -12,16 +16,29 @@ Target "Clean" <| fun _ ->
     CleanDirs [buildDir]
 
 Target "Restore" <| fun _ ->
-    Shell.Exec ("dotnet", "restore terminal-snake.sln") |> ignore
+    Restore <| fun p ->
+        { p with
+            NoCache = false
+            AdditionalArgs = ["terminal-snake.sln"] }
 
 Target "RestoreNpm" <| fun _ ->
-    Shell.Exec ("npm", "install") |> ignore
+    Npm <| fun p ->
+        { p with
+            Command = Install Standard }
 
 Target "BuildLib" <| fun _ ->
-    Shell.Exec ("dotnet", "build ./src/snake-game-lib/snake-game-lib.fsproj -o ../../build/snake-game-lib") |> ignore
+    DotNetCli.Build <| fun p ->
+        { p with
+            Configuration = "Release"
+            Project = "./src/snake-game-lib/snake-game-lib.fsproj"
+            Output = "../../build/snake-game-lib" }
 
 Target "BuildTerminal" <| fun _ ->
-    Shell.Exec ("dotnet", "build ./src/terminal-snake/terminal-snake.fsproj -o ../../build/terminal-snake") |> ignore
+    DotNetCli.Build <| fun p ->
+        { p with
+            Configuration = "Release"
+            Project = "./src/terminal-snake/terminal-snake.fsproj"
+            Output = "../../build/terminal-snake" }
 
 Target "BuildWeb" <| fun _ ->
     Shell.Exec ("./node_modules/.bin/fable", "src/web-snake/") |> ignore
@@ -30,6 +47,12 @@ Target "BuildWeb" <| fun _ ->
 Target "AndroidPackage" <| fun () ->
     trace "Cleaning Android project"
     MSBuildWithDefaults "Clean" ["./src/android-snake/android-snake.fsproj"] |> ignore
+
+    let keystorePath = getBuildParam "keystorePath"
+    let keystorePwd = getBuildParam "keystorePwd"
+    let keystoreAlias = getBuildParam "keystoreAlias"
+
+    trace <| sprintf "Using keystore %s; path=%s; password=%s" keystoreAlias keystorePath keystorePwd 
 
     trace "Packaging Android app"
     AndroidPackage (fun defaults ->
@@ -40,9 +63,9 @@ Target "AndroidPackage" <| fun () ->
     ) 
     |> AndroidSignAndAlign (fun defaults ->
         { defaults with
-            KeystorePath = "/Users/dragan/Library/Developer/Xamarin/Keystore/draganjovanovic1/draganjovanovic1.keystore"
-            KeystorePassword = "123123" // TODO: don't store this in the build script for a real app!
-            KeystoreAlias = "draganjovanovic1" }
+            KeystorePath = keystorePath
+            KeystorePassword = keystorePwd
+            KeystoreAlias = keystoreAlias }
     )
     |> fun file -> MoveFile "./build/android/" file.FullName
 
@@ -53,14 +76,26 @@ Target "IosPackage" <| fun () ->
     trace "Cleaning iOS project"
     MSBuildWithDefaults "Clean" ["./src/ios-snake/ios-snake.fsproj"] |> ignore
 
+    let buildPath = "./build/ios/"
+
     trace "Packaging iOS app"
     iOSBuild (fun defaults ->
         { defaults with
             ProjectPath = "./src/ios-snake/ios-snake.fsproj"
             Configuration = "Release|iPhone"
             Target = "Build"
-            OutputPath = "./build/ios/.temp/" }
+            OutputPath = buildPath + ".temp/" }
     )
+
+    let appPath = "./build/ios/IOS.Snake.app"
+    ensureDirectory appPath
+
+    FileSystemHelper.subDirectories (directoryInfo buildPath)
+    |> Seq.find (fun d -> d.Name.EndsWith ".app")
+    |> fun a -> copyRecursive a (directoryInfo appPath) true |> ignore
+    
+    DeleteDirs ["./build/ios/.tempIOS.Snake.app"; "./build/ios/.temp"]
+    DeleteFile "./build/ios/.tempmtouch.stamp"
 
     // let outputFolder = Path.Combine("src", "TipCalc.iOS", "bin", "iPhone", "AppStore")
     // let appPath = Directory.EnumerateDirectories(outputFolder, "*.app").First()

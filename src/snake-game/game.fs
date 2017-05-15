@@ -7,11 +7,15 @@ module Core =
     type Square = { x: int; y: int }
     type Bounds = Square * Square
     type Snake = Square list
-    type Food = Square list
+    type FoodItem = { Position: Square; BestBefore: DateTime }
+    type Food = FoodItem list
     type Mines = Square list
     type Level = int
+    type Score = int
     type Direction = Up | Right | Down | Left
-    type GameStatus = InProgress | GameOver
+    type GameStatus = 
+        | InProgress of level: Level * score: Score 
+        | GameOver of level: Level * score: Score 
 
     type GameConfig = 
         { bounds: Bounds
@@ -27,8 +31,8 @@ module Core =
         | EndGame
 
     type Renderer = 
-        { redraw: Snake -> Food -> Mines -> Level -> unit 
-          ended: Snake -> Food -> Mines -> Level -> unit  }
+        { redraw: Snake -> Food -> Mines -> Level -> Score -> unit 
+          ended: Snake -> Food -> Mines -> Level -> Score -> unit  }
 
     exception BoundLessThanZeroException of string
     exception BoundsTooSmallException of string
@@ -118,17 +122,21 @@ module Game =
         | head::body -> body@mines |> List.exists ((=) head)
 
     let private tryEatSomeFood food head =
-        let eaten = food |> List.exists ((=) head)
+        let eaten = food |> List.exists (fun f -> f.Position = head)
         let food =
             if eaten then
-                food |> List.filter ((<>) head)
+                food |> List.filter (fun f -> f.Position <> head)
             else 
                 food
         eaten, food
 
+    let private removeRottenFood = List.filter (fun f -> f.BestBefore > DateTime.Now)
+
+    let private squaresOccupiedByFood = List.map (fun f -> f.Position)
+
     let private moveSnake bounds snake food mines direction =
         match snake with
-        | [] -> snake, food, mines
+        | [] -> snake, food, mines, false
         | head::_ ->
             let head = 
                 head 
@@ -141,7 +149,7 @@ module Game =
                 else
                     snake |> List.take (snake.Length - 1)
             let snake = head::body
-            snake, food, mines
+            snake, food, mines, foodEaten
 
     let private canAcceptDirection snake direction =
         match snake with 
@@ -155,14 +163,13 @@ module Game =
             | Left when head.y = neck.y -> false
             | _ -> true
 
-    let private shouldAdvanceToNextLevel startLength (snake: 'a list) level = (snake.Length - startLength) / level > 9
-
     let private addMines bounds snake food mines level =
         let rec addMines mines left =
             match left with
             | 0 -> mines
             | _ -> 
-                let mines = (createSquare bounds (snake@food@mines))::mines
+                let foodSquares = squaresOccupiedByFood food
+                let mines = (createSquare bounds (snake@foodSquares@mines))::mines
                 let left = left - 1
                 addMines mines left
         let mines = addMines mines level
@@ -172,6 +179,9 @@ module Game =
         | [] -> []
         | [t] -> [t]
         | head::tail -> getTail tail
+
+    let private shouldAdvanceToNextLevel score currentLevel =
+        score % 10 = 0 && score / 10 + 1 > currentLevel
 
     type GameInit = 
         { bounds: Bounds
@@ -184,59 +194,68 @@ module Game =
           level: Level }
 
     let private createGame (init: GameInit) = 
-        let mutable level = init.level
-        let mutable gameStatus = InProgress
-        let getLevel () = level
-        let checkGameStatus () = gameStatus
+        let setGameStatus, checkGameStatus =
+            let mutable status = InProgress (1, 0) 
+            (fun s -> status <- s), (fun () -> status)
         let gameAgent = 
             MailboxProcessor.Start(fun inbox ->
-                let rec loop snake food mines direction = async {
+                let rec loop snake food mines direction level score = async {
                     try
-                        let! action = inbox.Receive()
+                        let! action = inbox.Receive ()
 
                         match action with
                         | MoveSnake ->
-                            gameStatus <- if isCrashed snake mines then GameOver else InProgress
-                            match gameStatus with
-                            | GameOver ->
-                                init.renderer.ended snake food mines level
-                            | InProgress ->
-                                init.renderer.redraw snake food mines level
-
+                            if isCrashed snake mines then 
+                                setGameStatus <| GameOver (level, score)
+                            else 
+                                setGameStatus <| InProgress (level, score)
+                            match checkGameStatus () with
+                            | GameOver _ ->
+                                init.renderer.ended snake food mines level score
+                            | InProgress _ ->
+                                init.renderer.redraw snake food mines level score
+                                
                                 let tail = getTail snake
-                                
-                                let snake, food, mines = moveSnake init.bounds snake food mines direction
-                                
                                 let snake = 
                                     if snake.Length < init.startLength then
                                         snake@tail
                                     else
                                         snake
 
-                                if shouldAdvanceToNextLevel init.startLength snake level then
-                                    inbox.Post AdvanceToNextLevel                                
-                                return! loop snake food mines direction
-                        | ChangeDirection d ->
+                                let food = removeRottenFood food
+                                let snake, food, mines, foodEaten = moveSnake init.bounds snake food mines direction
+                                
+                                let score = if foodEaten then score + 1 else score
+
+                                if shouldAdvanceToNextLevel score level then
+                                    inbox.Post AdvanceToNextLevel
+
+                                return! loop snake food mines direction level score
+                        | ChangeDirection requestedDirection ->
                             let direction =  
-                                if canAcceptDirection snake d then
-                                    d
+                                if canAcceptDirection snake requestedDirection then
+                                    requestedDirection
                                 else
                                     direction
-                            return! loop snake food mines direction
+                            return! loop snake food mines direction level score
                         | AddFood -> 
-                            let food = (createSquare init.bounds (snake@food@mines))::food
-                            return! loop snake food mines direction
+                            let foodSquares = squaresOccupiedByFood food
+                            let newFood = 
+                                { Position = createSquare init.bounds (snake@foodSquares@mines)
+                                  BestBefore = DateTime.Now.AddSeconds (15.) }
+                            let food = newFood::food
+                            return! loop snake food mines direction level score
                         | AdvanceToNextLevel ->
-                            level <- level + 1
+                            let level = level + 1
                             let mines = addMines init.bounds snake food mines level
-                            return! loop snake food mines direction
+                            return! loop snake food mines direction level score
                         | EndGame -> ()
                     with
                         | ex -> ()
                 }
-                loop init.snake init.food init.mines init.direction
+                loop init.snake init.food init.mines init.direction init.level 0
             )
-        gameAgent, getLevel, checkGameStatus
+        gameAgent, checkGameStatus
         
     let startGame gameConfig renderer commandsStream =
         let { bounds = bounds
@@ -258,7 +277,7 @@ module Game =
               startLength = startLength
               level = 1 }
 
-        let gameAgent, getLevel, checkGameStatus = createGame gameInit
+        let gameAgent, checkGameStatus = createGame gameInit
 
         let rec addFoodLoop () =
             async {
@@ -269,11 +288,20 @@ module Game =
 
         let rec gameLoop () =
             async {
-                let divideBy = 1. + Math.Log (float (getLevel ()))
-                let delay = Math.Floor (100. / divideBy) |> int
-                do! Async.Sleep delay
-                gameAgent.Post MoveSnake
-                return! gameLoop ()
+                let delay level =
+                    async {
+                        let divideBy = 1. + Math.Log (float (level))
+                        let delay = Math.Floor (100. / divideBy) |> int
+                        do! Async.Sleep delay
+                        gameAgent.Post MoveSnake
+                    }
+
+                match checkGameStatus () with
+                | InProgress (l, _) -> 
+                    do! delay l
+                    return! gameLoop ()
+                | GameOver (l, _) -> 
+                    do! delay l
             }
 
         addFoodLoop () |> Async.StartImmediate

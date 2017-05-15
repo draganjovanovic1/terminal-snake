@@ -35,23 +35,23 @@ module Graphics =
                     printf "_"
                 )
 
-    let redraw bounds gameStatus snake food mines level =
+    let redraw bounds gameInProgress snake food mines level score =
         let gameStatusColor = ConsoleColor.DarkYellow
         let aliveSnakeColor = ConsoleColor.DarkGreen
         let deadSnakeColor = ConsoleColor.DarkRed
         let foodColor = ConsoleColor.Magenta
+        let expiringFoodColor = ConsoleColor.DarkMagenta
         let minesColor = ConsoleColor.Red
 
-        let snakeColor = 
-            match gameStatus with
-            | InProgress -> aliveSnakeColor
-            | GameOver -> deadSnakeColor
+        let snakeColor = if gameInProgress then aliveSnakeColor else deadSnakeColor
 
         clearScreen ()
-        let score = snake |> List.fold (fun s _ ->  s + 1) 0
         drawGameStatus gameStatusColor bounds level score
         drawSnake snakeColor snake
-        drawFood foodColor food 
+        let good, expiring =
+            food |> List.partition (fun f -> f.BestBefore > DateTime.Now.AddSeconds (5.))
+        drawFood foodColor (good |> List.map (fun f -> f.Position))
+        drawFood expiringFoodColor (expiring |> List.map (fun f -> f.Position))
         drawMines minesColor mines
 
 module Program =
@@ -76,16 +76,17 @@ module Program =
             e.Trigger, e.Publish
 
         let renderer = 
-            { redraw = redraw gameConfig.bounds InProgress
-              ended = redraw gameConfig.bounds GameOver }
+            { redraw = redraw gameConfig.bounds true
+              ended = redraw gameConfig.bounds false }
 
         let checkGameStatus = Game.startGame gameConfig renderer actionsStream
 
         let rec collectInput () =
             let checkGameStatusAndContinue () =
                 match checkGameStatus () with
-                | InProgress -> collectInput () 
-                | GameOver -> 
+                | InProgress _ -> 
+                    collectInput () 
+                | GameOver _ -> 
                     Console.SetCursorPosition (gameConfig.startPosition.x, gameConfig.startPosition.y)
                     Console.ForegroundColor <- ConsoleColor.Red
                     printf "GAME OVER! Press any key to continue..."
