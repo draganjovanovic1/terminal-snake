@@ -2,9 +2,9 @@ language: csharp
 dist: trusty
 sudo: required
 mono: latest
-node_js: "7"
 dotnet: 1.0.1
 before_script:
  - chmod +x ./build.sh
 script:
-  - ./build.sh
+  - ./build.sh Clean
+  - ./build.sh BuildTerminal

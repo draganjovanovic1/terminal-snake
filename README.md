@@ -1,5 +1,7 @@
 # terminal-snake
 
+[![Build Status](https://travis-ci.org/draganjovanovic1/terminal-snake.svg?branch=master)](https://travis-ci.org/draganjovanovic1/terminal-snake)  
+
 Popular snake game for terminal / console written in F# running on .NET Core / Fable / Xamarin
 
 To run the game, follow these steps:  

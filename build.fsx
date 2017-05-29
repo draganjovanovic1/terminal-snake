@@ -109,13 +109,19 @@ Target "IosPackage" <| fun () ->
 
 // Build order
 "Clean"
-  ==> "Restore"
-  ==> "RestoreNpm"
+
+"Restore"
   ==> "BuildLib"
   ==> "BuildTerminal"
+
+"RestoreNpm"
   ==> "BuildWeb"
+
+"Restore"
   ==> "AndroidPackage"
+  
+"Restore"
   ==> "IosPackage"
 
 // start build
-RunTargetOrDefault "BuildWeb"
+RunTargetOrDefault "BuildTerminal"
