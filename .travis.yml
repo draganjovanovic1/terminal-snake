@@ -3,8 +3,14 @@ dist: trusty
 sudo: required
 mono: latest
 dotnet: 1.0.1
+install:
+  - . $HOME/.nvm/nvm.sh
+  - nvm install stable
+  - nvm use stable
+  - npm install
 before_script:
- - chmod +x ./build.sh
+  - chmod +x ./build.sh
 script:
   - ./build.sh Clean
   - ./build.sh BuildTerminal
+  - ./build.sh BuildWeb
