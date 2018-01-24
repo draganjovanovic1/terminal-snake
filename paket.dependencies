@@ -1,26 +1,28 @@
+version 4.8.8
+
 source https://www.nuget.org/api/v2
 
-framework: netcore11, netstandard16
-
 nuget FAKE
-nuget FSharp.Core
-nuget FSharp.NET.Sdk
+
+group core
+    source https://www.nuget.org/api/v2
+    framework: netcore20, netstandard20
+
+    nuget FSharp.Core
 
 group android
     source https://www.nuget.org/api/v2
-
     framework: monoandroid70
 
-    nuget FSharp.Core
+    nuget FSharp.Core 4.1.17
     nuget Xamarin.Android.FSharp.ResourceProvider
     nuget SkiaSharp
     nuget SkiaSharp.Views
 
 group ios
     source https://www.nuget.org/api/v2
-
     framework: xamarinios
-    
-    nuget FSharp.Core
+
+    nuget FSharp.Core 4.1.17
     nuget SkiaSharp
     nuget SkiaSharp.Views

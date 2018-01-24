@@ -1,28 +1,24 @@
-<Project Sdk="FSharp.NET.Sdk;Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <AssemblyTitle>terminal-snake</AssemblyTitle>
-    <Authors>Dragan Jovanović</Authors>
-    <Description>Popular snake game runner for terminal / console</Description>
-    <Copyright>Dragan Jovanović</Copyright>
-    <TargetFramework>netcoreapp1.1</TargetFramework>
-    <DebugType>portable</DebugType>
     <AssemblyName>terminal-snake</AssemblyName>
+    <TargetFramework>netcoreapp2.0</TargetFramework>
+    <DebugType>portable</DebugType>
     <OutputType>Exe</OutputType>
     <Version>1.0.0</Version>
+    <Authors>Dragan Jovanović</Authors>
+    <Copyright>Dragan Jovanović</Copyright>
+    <Description>Popular snake game runner for terminal / console</Description>
     <PreserveCompilationContext>true</PreserveCompilationContext>
     <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Program.fs" />
-    <EmbeddedResource Include="**/*.resx" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="../snake-game-lib/snake-game-lib.fsproj" />
-  </ItemGroup>
-  <ItemGroup>
-    <DotNetCliToolReference Include="dotnet-compile-fsc">
-      <Version>1.0.0-preview2-020000</Version>
-    </DotNetCliToolReference>
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

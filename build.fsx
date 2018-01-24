@@ -1,6 +1,5 @@
 #r "./packages/FAKE/tools/FakeLib.dll"
 
-open System
 open Fake
 open Fake.XamarinHelper
 open Fake.DotNetCli
@@ -13,7 +12,10 @@ let buildDir  = "./build/"
 
 // Targets
 Target "Clean" <| fun _ ->
-    CleanDirs [buildDir]
+    !! "src/**/bin"
+     ++ "src/**/obj"
+     ++ buildDir
+    |> CleanDirs
 
 Target "Restore" <| fun _ ->
     Restore <| fun p ->
@@ -52,7 +54,7 @@ Target "AndroidPackage" <| fun () ->
     let keystorePwd = getBuildParam "keystorePwd"
     let keystoreAlias = getBuildParam "keystoreAlias"
 
-    trace <| sprintf "Using keystore %s; path=%s; password=%s" keystoreAlias keystorePath keystorePwd 
+    trace <| sprintf "Using keystore %s; path=%s; password=%s" keystoreAlias keystorePath keystorePwd
 
     trace "Packaging Android app"
     AndroidPackage (fun defaults ->
@@ -60,7 +62,7 @@ Target "AndroidPackage" <| fun () ->
             ProjectPath = "./src/android-snake/android-snake.fsproj"
             Configuration = "Release"
             OutputPath = "./build/android/.temp/x" }
-    ) 
+    )
     |> AndroidSignAndAlign (fun defaults ->
         { defaults with
             KeystorePath = keystorePath
@@ -93,7 +95,7 @@ Target "IosPackage" <| fun () ->
     FileSystemHelper.subDirectories (directoryInfo buildPath)
     |> Seq.find (fun d -> d.Name.EndsWith ".app")
     |> fun a -> copyRecursive a (directoryInfo appPath) true |> ignore
-    
+
     DeleteDirs ["./build/ios/.tempIOS.Snake.app"; "./build/ios/.temp"]
     DeleteFile "./build/ios/.tempmtouch.stamp"
 
@@ -117,11 +119,11 @@ Target "IosPackage" <| fun () ->
 "RestoreNpm"
   ==> "BuildWeb"
 
-"Restore"
-  ==> "AndroidPackage"
-  
-"Restore"
-  ==> "IosPackage"
+// "Restore"
+//   ==> "AndroidPackage"
+
+// "Restore"
+//   ==> "IosPackage"
 
 // start build
 RunTargetOrDefault "BuildTerminal"

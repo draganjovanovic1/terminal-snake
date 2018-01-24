@@ -1,2 +1,2 @@
-FSharp.Core
-FSharp.NET.Sdk
+group core
+    FSharp.Core
